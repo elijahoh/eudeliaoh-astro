@@ -1,0 +1,101 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import WavyBanner from '../../components/WavyBanner.astro';
+import Carousel from '../../components/Carousel.astro';
+import { sanityClient } from 'sanity:client';
+import { PortableText } from 'astro-portabletext';
+import SanityImage from '../../components/SanityImage.astro';
+
+const { slug } = Astro.params;
+
+const post = await sanityClient.fetch(
+  `*[_type == "post" && slug.current == $slug][0]{
+    title,
+    category,
+    description,
+    "image": mainImage.asset->url,
+    "additionalImages": additionalImages[].asset->url,
+    tags,
+    readTime,
+
+    publishedAt,
+    body,
+    postBody,
+    content
+  }`,
+  { slug }
+);
+
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+const categoryMap: Record<string, string> = {
+  'crafts': 'Crafts',
+  'illustrations': 'Illustrations',
+  'digital-art': 'Digital Art',
+  'coding': 'Coding',
+  'journal': 'Journal',
+};
+
+const formattedCategory = categoryMap[post.category] || post.category || 'Blog';
+const bodyContent = post.body || post.postBody || post.content;
+const formattedDate = post.publishedAt ? post.publishedAt.split('T')[0] : '';
+const allImages = [post.image, ...(post.additionalImages || [])].filter(Boolean);
+
+const portableTextComponents = {
+  type: {
+    image: SanityImage,
+  },
+};
+---
+
+<Layout title={`${post.title} | Blog`}>
+  <WavyBanner title={post.title} subtitle={`${formattedCategory} • ${formattedDate} • ${post.readTime || '2 min read'}`} />
+
+  <article class="max-w-3xl mx-auto px-4 py-12">
+    {/* Image Carousel */}
+    {allImages.length > 0 && (
+      <Carousel images={allImages} title={post.title} />
+    )}
+
+    {/* Excerpt / Summary with Global Accent Styling */}
+    {post.description && (
+      <p class="text-xl font-medium opacity-90 leading-relaxed mb-8 excerpt-accent pl-4 italic">
+
+        {post.description}
+      </p>
+    )}
+
+    {/* Category & Tag Metadata */}
+    <div class="flex flex-wrap items-center gap-2 mb-8">
+      {post.category && (
+        <a
+          href={`/blog?category=${post.category}`}
+          class="px-3 py-1 tag-pill-active rounded-full text-xs font-bold uppercase tracking-wide"
+        >
+          {formattedCategory}
+        </a>
+      )}
+
+      {post.tags && post.tags.map((tag: string) => (
+        <a
+          href={`/tag?name=${encodeURIComponent(tag)}`}
+          class="px-3 py-1 tag-pill-inactive rounded-full text-xs font-semibold hover:opacity-80 transition-opacity"
+
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+
+    {/* Portable Text Body Content */}
+    {bodyContent && (
+      <div class="prose dark:prose-invert max-w-none text-lg leading-relaxed space-y-6">
+        <PortableText value={bodyContent} components={portableTextComponents} />
+      </div>
+    )}
+  </article>
+</Layout>

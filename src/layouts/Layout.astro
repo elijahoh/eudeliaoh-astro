@@ -1,0 +1,256 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  logoText?: string;
+  logoImage?: string; // Optional image URL for logo (e.g., "/logo.png" or "https://...")
+}
+
+const {
+  title = "Eudelia's Portfolio & Blog",
+  description = "Creative digital artworks, sketches, and blog posts",
+  logoText = "Eudelia",
+  logoImage = "",
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme Flash Prevention Script (Defaults to Sakura) -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        return 'sakura'; // Sakura Pinkish Theme set as default
+      })();
+
+      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      window.localStorage.setItem('theme', theme);
+    </script>
+  </head>
+  <body class="min-h-screen flex flex-col antialiased selection:bg-pink-500 selection:text-white relative">
+    <!-- Navbar driven entirely by Global CSS Variables -->
+    <header class="navbar-header sticky top-0 z-50 backdrop-blur-md transition-colors border-b">
+      <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+        
+        <!-- Navbar Brand (Supports Text-Only or Image + Text) -->
+        <a href="/" class="nav-brand flex items-center gap-2.5 font-bold text-xl tracking-wide transition-opacity hover:opacity-80">
+          {logoImage && (
+            <img 
+              src={logoImage} 
+              alt={`${logoText} Logo`} 
+              class="w-8 h-8 rounded-full object-cover border border-pink-400/50 shadow-sm"
+            />
+          )}
+          <span>{logoText}</span>
+        </a>
+
+        <!-- Desktop Navigation Links & 3-State Theme Toggle (Hidden on Mobile) -->
+        <div class="hidden md:flex items-center space-x-6 text-sm font-semibold">
+          <a href="/" class="nav-link transition-colors">Home</a>
+          <a href="/portfolio" class="nav-link transition-colors">Portfolio</a>
+          <a href="/blog" class="nav-link transition-colors">Blog</a>
+          <a href="/about" class="nav-link transition-colors">About</a>
+          <a href="/contact" class="nav-link transition-colors">Contact</a>
+
+          <!-- 3-State Theme Cycle Button (Desktop) -->
+          <button
+            aria-label="Toggle Theme (Sakura, Light, Dark)"
+            class="theme-toggle-btn nav-toggle p-2.5 rounded-xl border transition-all cursor-pointer"
+            title="Cycle theme: Sakura -> Light -> Dark"
+          >
+            <!-- Custom 5-Petal Sakura Flower SVG Icon -->
+            <svg class="theme-sakura w-4 h-4 fill-pink-500" viewBox="0 0 24 24">
+              <path d="M12 2a4 4 0 0 0-3.5 6.05A4 4 0 0 0 3 11.5a4 4 0 0 0 2.45 3.7A4 4 0 0 0 7 19a4 4 0 0 0 5-1.5 4 4 0 0 0 5 1.5 4 4 0 0 0 1.55-3.8A4 4 0 0 0 21 11.5a4 4 0 0 0-5.5-3.45A4 4 0 0 0 12 2zm0 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+            </svg>
+            <!-- Sun Icon ☀️ -->
+            <svg class="theme-sun w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <!-- Moon Icon 🌙 -->
+            <svg class="theme-moon w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Controls (3-State Theme Toggle & 3-Lines Hamburger Button) -->
+        <div class="flex items-center space-x-2 md:hidden">
+          <!-- 3-State Theme Cycle Button (Mobile) -->
+          <button
+            aria-label="Toggle Theme (Sakura, Light, Dark)"
+            class="theme-toggle-btn nav-toggle p-2 rounded-xl border transition-all cursor-pointer"
+          >
+            <!-- Custom 5-Petal Sakura Flower SVG Icon -->
+            <svg class="theme-sakura w-4 h-4 fill-pink-500" viewBox="0 0 24 24">
+              <path d="M12 2a4 4 0 0 0-3.5 6.05A4 4 0 0 0 3 11.5a4 4 0 0 0 2.45 3.7A4 4 0 0 0 7 19a4 4 0 0 0 5-1.5 4 4 0 0 0 5 1.5 4 4 0 0 0 1.55-3.8A4 4 0 0 0 21 11.5a4 4 0 0 0-5.5-3.45A4 4 0 0 0 12 2zm0 8.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+            </svg>
+            <!-- Sun Icon ☀️ -->
+            <svg class="theme-sun w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <!-- Moon Icon 🌙 -->
+            <svg class="theme-moon w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+
+
+          <!-- 3-Lines Hamburger Menu Toggle Button -->
+          <button
+            id="mobile-menu-btn"
+            aria-label="Toggle Navigation Menu"
+            class="nav-toggle p-2 rounded-xl border transition-all cursor-pointer"
+          >
+            <!-- 3-Lines Hamburger Icon -->
+            <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"></line>
+              <line x1="4" y1="12" x2="20" y2="12"></line>
+              <line x1="4" y1="18" x2="20" y2="18"></line>
+            </svg>
+            <!-- Close (X) Icon -->
+            <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+      </nav>
+
+      <!-- Mobile Dropdown Navigation Menu (Hidden by Default) -->
+      <div 
+        id="mobile-menu" 
+
+        class="hidden md:hidden border-t px-4 py-4 space-y-2 font-semibold text-sm transition-colors border-[var(--color-nav-border)]"
+      >
+        <a href="/" class="nav-link block px-3 py-2 rounded-lg transition-colors">Home</a>
+        <a href="/portfolio" class="nav-link block px-3 py-2 rounded-lg transition-colors">Portfolio</a>
+        <a href="/blog" class="nav-link block px-3 py-2 rounded-lg transition-colors">Blog</a>
+        <a href="/about" class="nav-link block px-3 py-2 rounded-lg transition-colors">About</a>
+        <a href="/contact" class="nav-link block px-3 py-2 rounded-lg transition-colors">Contact</a>
+      </div>
+    </header>
+
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Floating Back to Top Button (Theme-aware styling) -->
+    <button
+      id="back-to-top"
+      aria-label="Scroll back to top of page"
+      class="fixed bottom-6 right-6 z-50 p-3 rounded-full border shadow-2xl backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+    >
+      <svg class="w-5 h-5 stroke-current" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 15l-6-6-6 6"></path>
+      </svg>
+    </button>
+
+    <footer class="border-t border-gray-200 dark:border-slate-800 py-8 text-center text-xs opacity-70">
+      <p>&copy; {new Date().getFullYear()} eudeliaoh.com</p>
+    </footer>
+
+    <style is:global>
+      /* Navbar CSS Binding */
+      .navbar-header {
+        background-color: var(--color-nav-bg);
+        border-color: var(--color-nav-border);
+      }
+      .nav-brand, .nav-link {
+        color: var(--color-nav-text);
+      }
+      .nav-link:hover {
+        color: var(--color-nav-text-hover);
+      }
+      .nav-toggle {
+        border-color: var(--color-nav-toggle-border);
+        color: var(--color-nav-text);
+      }
+      .nav-toggle:hover {
+        background-color: var(--color-nav-toggle-hover);
+      }
+    </style>
+
+    <script>
+      // Dynamically read theme cycle order from global CSS variable --theme-cycle-order
+      const getThemeOrder = () => {
+        const rawOrder = getComputedStyle(document.documentElement)
+          .getPropertyValue('--theme-cycle-order')
+          .replace(/['"]/g, '')
+          .trim();
+        return rawOrder ? rawOrder.split(',') : ['sakura', 'light', 'dark'];
+      };
+
+      // 3-State Cycle Button Logic
+      const toggleBtns = document.querySelectorAll('.theme-toggle-btn');
+      toggleBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const order = getThemeOrder();
+          const current = document.documentElement.getAttribute('data-theme') || 'sakura';
+          
+          const currentIndex = order.indexOf(current);
+          const nextIndex = (currentIndex + 1) % order.length;
+          const nextTheme = order[nextIndex];
+
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+          localStorage.setItem('theme', nextTheme);
+        });
+      });
+
+      // Toggle mobile hamburger dropdown menu
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const hamburgerIcon = document.getElementById('hamburger-icon');
+      const closeIcon = document.getElementById('close-icon');
+
+      menuBtn?.addEventListener('click', () => {
+        mobileMenu?.classList.toggle('hidden');
+        hamburgerIcon?.classList.toggle('hidden');
+        closeIcon?.classList.toggle('hidden');
+      });
+
+
+      // Floating Back to Top Button Logic
+      const backToTopBtn = document.getElementById('back-to-top');
+
+      const handleScroll = () => {
+        if (window.scrollY > 250) {
+          backToTopBtn?.classList.remove('opacity-0', 'pointer-events-none');
+          backToTopBtn?.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+          backToTopBtn?.classList.add('opacity-0', 'pointer-events-none');
+          backToTopBtn?.classList.remove('opacity-100', 'pointer-events-auto');
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll);
+
+      backToTopBtn?.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    </script>
+  </body>
+</html>

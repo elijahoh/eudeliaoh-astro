@@ -1,0 +1,93 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  bannerImage?: string;
+}
+
+const {
+  title = "Welcome to Eudelia's Studio",
+  subtitle = "Digital Artworks, Sketches & Blog Posts",
+  // Placeholder image (Replace with e.g. "/banner-art.jpg" or Sanity Image URL)
+  bannerImage = "https://picsum.photos/1920/600?banner=hero",
+} = Astro.props;
+---
+
+<div class="relative bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 text-white overflow-hidden pt-16 pb-24 px-4">
+  
+  <!-- Banner Background Artwork Image & Semi-Transparent Tint Overlay -->
+  {bannerImage && (
+    <div class="absolute inset-0 z-0">
+      <img
+        src={bannerImage}
+        alt="Banner Header Artwork"
+        class="w-full h-full object-cover opacity-35 mix-blend-overlay"
+      />
+      <!-- Soft Gradient Overlay for text contrast -->
+      <div class="absolute inset-0 bg-gradient-to-t from-purple-900/80 via-purple-900/40 to-transparent"></div>
+    </div>
+  )}
+
+  <div class="max-w-4xl mx-auto text-center relative z-10 mb-8">
+    <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 drop-shadow-md">{title}</h1>
+    <p class="text-lg md:text-xl text-purple-100 max-w-2xl mx-auto drop-shadow-sm">{subtitle}</p>
+  </div>
+
+  <!-- 3-Layer Staggered Parallax Wave Container -->
+  <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0 pointer-events-none" style="height: var(--wave-height);">
+    
+    <!-- Layer 3 (Back / Slowest) -->
+    <div class="wave-track wave-layer-3 flex w-[200%] h-full absolute bottom-0 left-0" style="opacity: var(--wave-opacity-3);">
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,20 C 200,80 400,-10 600,30 C 800,70 1000,-10 1200,20 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,20 C 200,80 400,-10 600,30 C 800,70 1000,-10 1200,20 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+    </div>
+
+    <!-- Layer 2 (Middle) -->
+    <div class="wave-track wave-layer-2 flex w-[200%] h-full absolute bottom-0 left-0" style="opacity: var(--wave-opacity-2);">
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,50 C 150,10 350,90 600,40 C 850,-10 1050,80 1200,50 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,50 C 150,10 350,90 600,40 C 850,-10 1050,80 1200,50 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+    </div>
+
+    <!-- Layer 1 (Front / Full Opacity) -->
+    <div class="wave-track wave-layer-1 flex w-[200%] h-full absolute bottom-0 left-0" style="opacity: var(--wave-opacity-1);">
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,40 C 150,90 350,-10 600,40 C 850,90 1050,-10 1200,40 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+      <svg class="w-1/2 h-full shrink-0 block" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M 0,40 C 150,90 350,-10 600,40 C 850,90 1050,-10 1200,40 L 1200,120 L 0,120 Z" fill="var(--color-bg)"></path>
+      </svg>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  @keyframes seamlessWave {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+  }
+
+  .wave-track {
+    will-change: transform;
+  }
+
+  .wave-layer-1 {
+    animation: seamlessWave var(--wave-speed-1, 12s) linear infinite;
+  }
+
+  .wave-layer-2 {
+    animation: seamlessWave var(--wave-speed-2, 18s) linear infinite;
+  }
+
+  .wave-layer-3 {
+    animation: seamlessWave var(--wave-speed-3, 26s) linear infinite;
+  }
+</style>

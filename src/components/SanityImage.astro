@@ -1,0 +1,16 @@
+---
+import { urlFor } from '../lib/sanityImage';
+
+const { node } = Astro.props;
+const imageUrl = node?.asset ? urlFor(node).url() : null;
+---
+
+{imageUrl && (
+  <a href={imageUrl} target="_blank" rel="noopener noreferrer" class="group relative block my-6 rounded-2xl overflow-hidden shadow-md">
+    <img src={imageUrl} alt={node.alt || 'Blog inline image'} class="w-full h-auto rounded-2xl object-cover transition-transform duration-300 group-hover:scale-[1.01]" />
+    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-md opacity-80 group-hover:opacity-100 flex items-center gap-1.5">
+      Click to expand
+    </span>
+  </a>
+
+)}

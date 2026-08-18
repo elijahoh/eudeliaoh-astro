@@ -1,0 +1,27 @@
+# Node dependencies (root and nested)
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+
+# Framework & tool caches
+.astro/
+.sanity/
+.wrangler/
+**/.sanity/
+**/.astro/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Local development & AI chat logs
+.aider.chat.history.md
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db

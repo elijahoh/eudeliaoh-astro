@@ -1,0 +1,175 @@
+---
+interface Props {
+  logoText?: string;
+  logoImage?: string; // Optional path to image/avatar (e.g., "/logo.png" or "https://...")
+}
+
+const {
+  logoText = "Eudelia",
+  logoImage = "", // Leave empty for text-only, or provide image URL for text + image logo
+} = Astro.props;
+
+// Navigation links configuration
+const navLinks = [
+  { name: 'Portfolio', href: '/portfolio' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="sticky top-0 z-50 w-full backdrop-blur-md border-b nav-header-bg border-[var(--color-nav-border)] transition-colors duration-300">
+  <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+    
+    <!-- ------------------------------------------------------------------------
+       * NAVBAR LOGO (Supports Text-Only or Image + Text)
+       * ------------------------------------------------------------------------ -->
+    <a href="/" class="flex items-center gap-2.5 font-bold text-lg tracking-tight transition-opacity hover:opacity-80">
+      {logoImage && (
+        <img 
+          src={logoImage} 
+          alt={`${logoText} Logo`} 
+
+          class="w-8 h-8 rounded-full object-cover border border-amber-400/50 shadow-sm"
+        />
+      )}
+      <span class="nav-text-color">{logoText}</span>
+    </a>
+
+    <!-- ------------------------------------------------------------------------
+       * DESKTOP NAVIGATION LINKS (Hidden on Mobile)
+       * ------------------------------------------------------------------------ -->
+    <nav class="hidden md:flex items-center gap-6">
+      {navLinks.map((link) => {
+        const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+        return (
+          <a
+            href={link.href}
+            class={`text-sm font-semibold transition-colors ${
+              isActive ? 'text-amber-400 font-bold' : 'nav-text-color hover:text-amber-400'
+            }`}
+          >
+            {link.name}
+          </a>
+        );
+      })}
+
+      <!-- Theme Toggle Button (Desktop) -->
+      <button
+        id="theme-toggle-desktop"
+        aria-label="Toggle Theme"
+        class="p-2 rounded-full border border-[var(--color-nav-toggle-border)] hover:bg-[var(--color-nav-toggle-hover)] transition-colors cursor-pointer text-sm"
+      >
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+
+      </button>
+    </nav>
+
+    <!-- ------------------------------------------------------------------------
+       * MOBILE HAMBURGER MENU BUTTON (Visible on Mobile Only)
+       * ------------------------------------------------------------------------ -->
+    <div class="flex items-center gap-2 md:hidden">
+      <!-- Theme Toggle Button (Mobile) -->
+      <button
+        id="theme-toggle-mobile"
+        aria-label="Toggle Theme"
+        class="p-2 rounded-full border border-[var(--color-nav-toggle-border)] hover:bg-[var(--color-nav-toggle-hover)] transition-colors cursor-pointer text-sm"
+      >
+        <span class="dark:hidden">🌙</span>
+        <span class="hidden dark:inline">☀️</span>
+      </button>
+
+      <!-- 3-Lines Hamburger / Close Icon Toggle -->
+      <button
+        id="mobile-menu-btn"
+        aria-label="Toggle Navigation Menu"
+        class="p-2 rounded-xl border border-[var(--color-nav-toggle-border)] hover:bg-[var(--color-nav-toggle-hover)] transition-colors cursor-pointer nav-text-color"
+      >
+        <!-- Hamburger Icon -->
+        <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <!-- Close (X) Icon -->
+        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ------------------------------------------------------------------------
+     * MOBILE DROPDOWN MENU (Toggles via JavaScript)
+     * ------------------------------------------------------------------------ -->
+  <div 
+    id="mobile-menu" 
+    class="hidden md:hidden border-t border-[var(--color-nav-border)] nav-header-bg px-4 py-4 space-y-2 shadow-xl"
+  >
+    {navLinks.map((link) => {
+      const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href));
+      return (
+        <a
+          href={link.href}
+          class={`block px-4 py-2.5 rounded-xl text-base font-semibold transition-colors ${
+            isActive ? 'bg-amber-400/10 text-amber-400 font-bold' : 'nav-text-color hover:bg-[var(--color-nav-toggle-hover)]'
+          }`}
+        >
+          {link.name}
+        </a>
+      );
+    })}
+
+  </div>
+</header>
+
+<style>
+  /* Header Background driven by Global CSS Variables */
+  .nav-header-bg {
+    background-color: var(--color-nav-bg);
+  }
+
+  /* Header Text driven by Global CSS Variables */
+  .nav-text-color {
+    color: var(--color-nav-text);
+  }
+</style>
+
+<script>
+  // Mobile Hamburger Toggle Logic
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+  const closeIcon = document.getElementById('close-icon');
+
+  menuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+    hamburgerIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+  });
+
+  // Dark/Light Mode Switcher Logic
+  const setupThemeToggle = (btnId: string) => {
+
+    const btn = document.getElementById(btnId);
+
+    btn?.addEventListener('click', () => {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('dark');
+      if (isDark) {
+        html.classList.remove('dark');
+        html.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        html.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+  };
+
+  setupThemeToggle('theme-toggle-desktop');
+  setupThemeToggle('theme-toggle-mobile');
+</script>

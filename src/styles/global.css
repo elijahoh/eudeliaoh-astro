@@ -1,0 +1,390 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   GLOBAL DESIGN SYSTEM & CONFIGURATION
+   ========================================================================== */
+
+:root {
+  --font-size-base: 16px;
+
+  /* ------------------------------------------------------------------------
+   * THEME CYCLE ORDER CONFIGURATION
+   * Customize the toggle sequence order here.
+   * Format: comma-separated string ("sakura,light,dark" or "light,dark,sakura")
+   * ------------------------------------------------------------------------ */
+  --theme-cycle-order: "sakura,light,dark";
+  --theme-default: "sakura";
+
+  /* ------------------------------------------------------------------------
+   * NAVBAR STYLING & COLORS (Default / Sakura Fallbacks)
+   * ------------------------------------------------------------------------ */
+  --color-nav-bg: rgba(251, 207, 232, 0.95);
+  --color-nav-text: #831843;
+  --color-nav-text-hover: #be185d;
+  --color-nav-border: #f472b6;
+  --color-nav-toggle-border: #f472b6;
+  --color-nav-toggle-hover: #fce7f3;
+
+  /* ------------------------------------------------------------------------
+   * CARD SIZING & HEIGHTS
+   * ------------------------------------------------------------------------ */
+  --card-height: 250px;
+
+  /* ------------------------------------------------------------------------
+   * CARD TYPOGRAPHY & ELEMENT SIZES
+   * ------------------------------------------------------------------------ */
+  --card-category-size: 0.75rem;      /* 12px (PORTFOLIO, BLOG, etc.) */
+  --card-title-size: 1.25rem;         /* 20px */
+  --card-description-size: 0.875rem;  /* 14px */
+  --card-meta-size: 0.75rem;          /* 12px (Date, Read Time) */
+  --card-pinned-size: 0.75rem;        /* 12px (Pinned Badge) */
+  --card-more-size: 0.75rem;          /* 12px ('more...' Action Pill) */
+
+  /* ------------------------------------------------------------------------
+   * CARD IMAGE HOVER ANIMATION
+   * ------------------------------------------------------------------------ */
+  --card-image-zoom: scale(1.12);
+  --card-image-tilt: rotate(2.5deg);
+
+  /* ------------------------------------------------------------------------
+   * METADATA VISIBILITY TOGGLES
+   * ------------------------------------------------------------------------ */
+  --display-card-date: inline-flex;
+  --display-card-readtime: inline-flex;
+
+  /* ------------------------------------------------------------------------
+   * MULTI-LAYERED WAVING BANNER CONTROLS
+   * ------------------------------------------------------------------------ */
+  --wave-height: 80px;
+  --wave-speed-1: 12s; /* Front wave (Fast) */
+  --wave-speed-2: 18s; /* Middle wave (Medium) */
+  --wave-speed-3: 26s; /* Back wave (Slow) */
+
+  --wave-opacity-1: 1.0;  /* Front opacity */
+  --wave-opacity-2: 0.5;  /* Middle opacity */
+  --wave-opacity-3: 0.25; /* Back opacity */
+
+  /* Default Theme Variables (Sakura Fallback - Card BG Matches Main BG) */
+
+  --color-bg: #fbcfe8;
+  --color-card-bg: var(--color-bg);
+  --color-card-category: #be185d;
+  --color-card-title: #831843;
+  --color-card-title-hover: #be185d;
+  --color-card-description: #9d174d;
+  --color-card-meta: #9f4055;
+  --color-card-pinned-bg: #ec4899;
+  --color-card-pinned-text: #ffffff;
+  --color-card-tag-bg: #fce7f3;
+  --color-card-tag-text: #831843;
+  --color-card-tag-border: #f472b6;
+  --color-tag-active-bg: #db2777;
+  --color-tag-active-text: #ffffff;
+  --color-excerpt-border: #db2777;
+  --color-card-more-bg: #fce7f3;
+  --color-card-more-text: #831843;
+  --color-card-more-hover-bg: #db2777;
+  --color-card-more-hover-text: #ffffff;
+  --card-shadow: 0 10px 30px -5px rgba(219, 39, 119, 0.18), 0 4px 12px -2px rgba(219, 39, 119, 0.08);
+
+  /* NEW: Theme-Aware Container Borders & Form Field Controls (Sakura Fallbacks) */
+  --color-border: #f472b6;
+  --color-input-bg: #fce7f3;
+  --color-input-text: #831843;
+  --color-input-border: #f472b6;
+  --color-input-placeholder: #9f4055;
+  --color-input-focus: #db2777;
+}
+
+/* ------------------------------------------------------------------------
+   1. SAKURA THEME PALETTE (Card BG Matches Main Background)
+   ------------------------------------------------------------------------ */
+[data-theme="sakura"] {
+  --color-bg: #fbcfe8;
+  --color-card-bg: var(--color-bg);
+
+  /* Navbar Styling (Sakura Mode) */
+  --color-nav-bg: rgba(251, 207, 232, 0.95);
+  --color-nav-text: #831843;
+  --color-nav-text-hover: #be185d;
+  --color-nav-border: #f472b6;
+  --color-nav-toggle-border: #f472b6;
+  --color-nav-toggle-hover: #fce7f3;
+
+  /* Category Label */
+  --color-card-category: #be185d;
+
+  /* Card Text & Hover Colors */
+  --color-card-title: #831843;
+  --color-card-title-hover: #be185d;
+  --color-card-description: #9d174d;
+  --color-card-meta: #9f4055;
+
+  /* Pinned Badge */
+  --color-card-pinned-bg: #ec4899;
+  --color-card-pinned-text: #ffffff;
+
+  /* Tag Pills */
+  --color-card-tag-bg: #fce7f3;
+  --color-card-tag-text: #831843;
+  --color-card-tag-border: #f472b6;
+
+  /* Active Filter Tag Pills */
+  --color-tag-active-bg: #db2777;
+  --color-tag-active-text: #ffffff;
+
+
+  /* Excerpt Vertical Accent Border */
+  --color-excerpt-border: #db2777;
+
+  /* Action Pill & Hover Colors */
+  --color-card-more-bg: #fce7f3;
+  --color-card-more-text: #831843;
+  --color-card-more-hover-bg: #db2777;
+  --color-card-more-hover-text: #ffffff;
+
+  --card-shadow: 0 10px 30px -5px rgba(219, 39, 119, 0.18), 0 4px 12px -2px rgba(219, 39, 119, 0.08);
+
+  /* NEW: Form & Border Theme Variables (Sakura Mode) */
+  --color-border: #f472b6;
+  --color-input-bg: #fce7f3;
+  --color-input-text: #831843;
+  --color-input-border: #f472b6;
+  --color-input-placeholder: #9f4055;
+
+  --color-input-focus: #db2777;
+}
+
+/* ------------------------------------------------------------------------
+   2. LIGHT MODE THEME PALETTE (Clean Neutral Theme)
+   ------------------------------------------------------------------------ */
+[data-theme="light"] {
+  --color-bg: #f8fafc;
+  --color-card-bg: #ffffff;
+
+  /* Navbar Styling (Light Mode) */
+  --color-nav-bg: rgba(255, 255, 255, 0.95);
+  --color-nav-text: #1f2937;
+  --color-nav-text-hover: #7c5cff;
+  --color-nav-border: #e5e7eb;
+  --color-nav-toggle-border: #d1d5db;
+  --color-nav-toggle-hover: #f3f4f6;
+
+  /* Category Label */
+  --color-card-category: #7c5cff;
+
+  /* Card Text & Hover Colors */
+  --color-card-title: #0f172a;
+  --color-card-title-hover: #7c5cff;
+  --color-card-description: #334155;
+
+  --color-card-meta: #64748b;
+
+  /* Pinned Badge */
+  --color-card-pinned-bg: #7c5cff;
+
+  --color-card-pinned-text: #ffffff;
+
+  /* Tag Pills */
+  --color-card-tag-bg: #f1f5f9;
+  --color-card-tag-text: #475569;
+  --color-card-tag-border: #e2e8f0;
+
+  /* Active Filter Tag Pills */
+  --color-tag-active-bg: #7c5cff;
+  --color-tag-active-text: #ffffff;
+
+  /* Excerpt Vertical Accent Border */
+  --color-excerpt-border: #7c5cff;
+
+  /* Action Pill & Hover Colors */
+  --color-card-more-bg: #f3e8ff;
+  --color-card-more-text: #6b21a8;
+  --color-card-more-hover-bg: #7c5cff;
+  --color-card-more-hover-text: #ffffff;
+
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+
+  /* NEW: Form & Border Theme Variables (Light Mode) */
+  --color-border: #e2e8f0;
+  --color-input-bg: #f8fafc;
+  --color-input-text: #0f172a;
+  --color-input-border: #cbd5e1;
+  --color-input-placeholder: #94a3b8;
+  --color-input-focus: #7c5cff;
+}
+
+/* ------------------------------------------------------------------------
+   3. DARK MODE THEME PALETTE (Midnight Slate Theme)
+   ------------------------------------------------------------------------ */
+[data-theme="dark"], html.dark {
+  --color-bg: #0f172a;
+  --color-card-bg: var(--color-bg);
+
+  /* Navbar Styling (Dark Mode) */
+  --color-nav-bg: rgba(15, 23, 42, 0.95);
+  --color-nav-text: #f8fafc;
+  --color-nav-text-hover: #c084fc;
+  --color-nav-border: #334155;
+  --color-nav-toggle-border: #475569;
+  --color-nav-toggle-hover: #1e293b;
+
+  /* Category Label */
+  --color-card-category: #c084fc;
+
+  /* Card Text & Hover Colors */
+  --color-card-title: #f8fafc;
+  --color-card-title-hover: #c084fc;
+  --color-card-description: #cbd5e1;
+  --color-card-meta: #94a3b8;
+
+  /* Pinned Badge */
+  --color-card-pinned-bg: #9333ea;
+  --color-card-pinned-text: #ffffff;
+
+  /* Tag Pills */
+  --color-card-tag-bg: #1e293b;
+  --color-card-tag-text: #e2e8f0;
+  --color-card-tag-border: #334155;
+
+  /* Active Filter Tag Pills */
+  --color-tag-active-bg: #fbbf24;
+  --color-tag-active-text: #0f172a;
+
+  /* Excerpt Vertical Accent Border */
+  --color-excerpt-border: #fbbf24;
+
+  /* Action Pill & Hover Colors */
+  --color-card-more-bg: #3b0764;
+  --color-card-more-text: #e9d5ff;
+  --color-card-more-hover-bg: #a855f7;
+  --color-card-more-hover-text: #ffffff;
+
+  --card-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+
+  /* NEW: Form & Border Theme Variables (Dark Mode) */
+  --color-border: #334155;
+  --color-input-bg: #1e293b;
+  --color-input-text: #f8fafc;
+
+  --color-input-border: #475569;
+  --color-input-placeholder: #64748b;
+  --color-input-focus: #fbbf24;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-card-title);
+  font-size: var(--font-size-base);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.custom-card-shadow {
+  box-shadow: var(--card-shadow);
+}
+
+.meta-date {
+  display: var(--display-card-date, inline-flex);
+}
+
+.meta-readtime {
+  display: var(--display-card-readtime, inline-flex);
+}
+
+
+/* ------------------------------------------------------------------------
+   3-STATE TOGGLE BUTTON ICON VISIBILITY RULES
+   Shows Sakura SVG (🌸), Sun (☀️), or Moon (🌙) based on current data-theme.
+   ------------------------------------------------------------------------ */
+.theme-sakura,
+.theme-sun,
+.theme-moon {
+  display: none;
+}
+
+[data-theme="sakura"] .theme-sakura,
+html:not([data-theme]) .theme-sakura {
+  display: block;
+}
+
+[data-theme="light"] .theme-sun {
+  display: block;
+}
+
+[data-theme="dark"] .theme-moon {
+  display: block;
+}
+
+/* ------------------------------------------------------------------------
+   FLOATING BACK TO TOP BUTTON STYLING
+   ------------------------------------------------------------------------ */
+#back-to-top {
+  background-color: var(--color-card-bg);
+  color: var(--color-card-title);
+  border-color: var(--color-nav-border);
+}
+
+#back-to-top:hover {
+  background-color: var(--color-tag-active-bg);
+  color: var(--color-tag-active-text);
+}
+
+/* ------------------------------------------------------------------------
+   GLOBAL UTILITY CLASSES FOR BUTTONS, ACCENT BORDERS & TAG PILLS
+   ------------------------------------------------------------------------ */
+.excerpt-accent {
+  border-left-width: 4px;
+  border-left-color: var(--color-excerpt-border);
+}
+
+.tag-pill-active {
+  background-color: var(--color-tag-active-bg);
+  color: var(--color-tag-active-text);
+}
+
+.tag-pill-inactive {
+  background-color: var(--color-card-tag-bg);
+  color: var(--color-card-tag-text);
+  border: 1px solid var(--color-card-tag-border);
+}
+
+/* Dynamic Action Buttons (e.g., Homepage "View All Portfolio" Buttons) */
+.btn-theme-action {
+  background-color: var(--color-card-more-bg);
+  color: var(--color-card-more-text);
+  border: 1px solid var(--color-card-tag-border);
+}
+
+.btn-theme-action:hover {
+  background-color: var(--color-card-more-hover-bg);
+  color: var(--color-card-more-hover-text);
+}
+
+/* ------------------------------------------------------------------------
+   NEW: THEME-AWARE FORM CONTROLS & BORDER UTILITIES
+   Use these classes on form inputs, cards, and sections across About/Contact
+   to ensure perfect contrast in Sakura, Light, and Dark modes.
+   ------------------------------------------------------------------------ */
+
+/* Theme-Aware Container Borders */
+.theme-card-border {
+  border-color: var(--color-border);
+
+}
+
+/* Theme-Aware Form Inputs (<input>, <textarea>) */
+.form-input-theme {
+  background-color: var(--color-input-bg);
+  color: var(--color-input-text);
+  border: 1px solid var(--color-input-border);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input-theme::placeholder {
+  color: var(--color-input-placeholder);
+}
+
+.form-input-theme:focus {
+  outline: none;
+  border-color: var(--color-input-focus);
+}

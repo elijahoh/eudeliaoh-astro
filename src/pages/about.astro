@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WavyBanner from '../components/WavyBanner.astro';
+
+// Helper data for creative skills matching site categories
+const skills = [
+  {
+    title: "Crafts",
+    description: "Handcrafting miniature clay models, paper craft prototypes, and physical sculpture studies.",
+    icon: "🎨"
+  },
+  {
+    title: "Illustrations",
+    description: "Creating traditional sketches, watercolor artwork, character concepts, and visual stories.",
+    icon: "🖌️"
+  },
+  {
+    title: "Digital Art",
+    description: "Designing pixel art, digital paintings, character avatars, and ambient graphic art.",
+    icon: "✨"
+  },
+  {
+    title: "Coding",
+    description: "Building interactive Scratch projects, Minecraft creations, and creative experiments.",
+    icon: "💻"
+  }
+];
+---
+
+<Layout title="About | Eudelia's Studio">
+  <!-- Site-wide Wavy Header Banner -->
+  <WavyBanner
+    title="About Eudelia"
+    subtitle="Artist, Craft Designer, and Digital Creator based in Singapore."
+  />
+
+  <main class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- Hero Profile & Bio Section -->
+    <section class="flex flex-col md:flex-row items-center gap-8 bg-[var(--color-card-bg)] border border-neutral-200 dark:border-neutral-800 p-8 rounded-2xl shadow-md">
+      <!-- Profile Picture / Avatar Container -->
+      <div class="w-40 h-40 md:w-48 md:h-48 shrink-0 rounded-full overflow-hidden border-4 border-amber-400/40 shadow-lg">
+        <img
+          src="https://picsum.photos/400/400?random=10"
+          alt="Eudelia Portrait"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <!-- Bio Content (Theme-Aware Contrast) -->
+      <div class="space-y-4 text-center md:text-left">
+        <h2 class="text-2xl font-bold tracking-tight">Hello, I'm Eudelia! 👋</h2>
+        <p class="opacity-90 leading-relaxed">
+          Welcome to my creative space. I am a passionate artist dedicated to bringing ideas to life through physical clay models, paper craft prototypes, illustrations, digital art, and coding projects.
+        </p>
+        <p class="opacity-75 text-sm leading-relaxed">
+          Whether exploring dynamic character poses or shaping miniature physical sculptures, I love sharing the behind-the-scenes journey and experimental techniques behind every build.
+
+        </p>
+      </div>
+    </section>
+
+    <!-- Creative Disciplines / What I Do -->
+    <section>
+      <div class="mb-8 text-center md:text-left">
+        <h2 class="text-2xl font-bold tracking-tight">What I Create</h2>
+        <p class="text-sm opacity-70">Core artistic focuses and studio projects</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {skills.map((skill) => (
+          <div class="bg-[var(--color-card-bg)] border border-neutral-200 dark:border-neutral-800 p-6 rounded-2xl shadow-md hover:border-amber-400/50 transition-all duration-300">
+            <div class="text-3xl mb-3">{skill.icon}</div>
+            <h3 class="text-lg font-bold mb-2">{skill.title}</h3>
+            <p class="text-sm opacity-75 leading-relaxed">{skill.description}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </main>
+</Layout>

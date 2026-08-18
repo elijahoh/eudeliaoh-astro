@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WavyBanner from '../../components/WavyBanner.astro';
+import Card from '../../components/Card.astro';
+import { sanityClient } from 'sanity:client';
+
+const selectedCategory = Astro.url.searchParams.get('category')?.toLowerCase() || 'all';
+const selectedTag = Astro.url.searchParams.get('tag')?.toLowerCase();
+
+const CATEGORIES = [
+  { label: 'All', value: 'all' },
+  { label: 'Crafts', value: 'crafts' },
+  { label: 'Illustrations', value: 'illustrations' },
+  { label: 'Digital Art', value: 'digital-art' },
+  { label: 'Coding', value: 'coding' },
+];
+
+const categoryMap: Record<string, string> = {
+  'crafts': 'Crafts',
+  'illustrations': 'Illustrations',
+  'digital-art': 'Digital Art',
+  'coding': 'Coding',
+};
+
+// Fetch all portfolio items
+const rawItems = await sanityClient.fetch(
+  `*[_type == "portfolio"] | order(publishedAt desc) {
+    _id,
+    _type,
+    title,
+    category,
+    "slug": slug.current,
+    "image": mainImage.asset->url,
+    description,
+    tags,
+    publishedAt
+
+  }`,
+  {},
+  { stega: false }
+);
+
+// 1. Filter by Category first (if not 'all')
+const categoryFilteredItems = selectedCategory !== 'all'
+  ? rawItems.filter((item: any) => item.category?.toLowerCase() === selectedCategory)
+  : rawItems;
+
+// 2. Extract unique tags within the currently selected category context
+const categoryTags = [...new Set(categoryFilteredItems.flatMap((item: any) => item.tags || []))];
+
+// 3. Filter by Tag if selected
+const filteredItems = selectedTag
+  ? categoryFilteredItems.filter((item: any) =>
+
+      item.tags?.some((t: string) => t.toLowerCase() === selectedTag)
+    )
+  : categoryFilteredItems;
+
+// Subtitle generator logic
+let subtitleText = "Explore my physical crafts, prototypes, and artwork.";
+if (selectedCategory !== 'all' && selectedTag) {
+  subtitleText = `Showing ${categoryMap[selectedCategory] || selectedCategory} items tagged with #${selectedTag}`;
+} else if (selectedCategory !== 'all') {
+  subtitleText = `Showing all ${categoryMap[selectedCategory] || selectedCategory} projects`;
+} else if (selectedTag) {
+  subtitleText = `Showing items tagged with #${selectedTag}`;
+}
+---
+
+<Layout title="Portfolio | Eudelia's Studio">
+  <WavyBanner
+    title="Portfolio Showcase"
+    subtitle={subtitleText}
+  />
+
+  <main class="max-w-4xl mx-auto px-4 py-12 space-y-8">
+
+    <!-- Category Filter Tabs -->
+    <div class="space-y-4 pb-6 border-b border-neutral-800">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider opacity-60 mr-2">Category:</span>
+        {CATEGORIES.map((cat) => {
+          const isActive = selectedCategory === cat.value;
+          const href = cat.value === 'all' ? '/portfolio' : `/portfolio?category=${cat.value}`;
+          return (
+            <a
+              href={href}
+              class={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${isActive ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+            >
+              {cat.label}
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Secondary Tag Filters (Scoped to Current Category) -->
+      {categoryTags.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2 pt-2">
+          <span class="text-xs font-bold uppercase tracking-wider opacity-60 mr-2">Tags:</span>
+          <a
+            href={selectedCategory !== 'all' ? `/portfolio?category=${selectedCategory}` : '/portfolio'}
+            class={`px-3 py-1 rounded-full text-xs font-medium transition-all ${!selectedTag ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+          >
+            All Tags
+          </a>
+          {categoryTags.map((tag: string) => {
+            const isTagActive = selectedTag === tag.toLowerCase();
+            const tagHref = selectedCategory !== 'all'
+              ? `/portfolio?category=${selectedCategory}&tag=${encodeURIComponent(tag)}`
+              : `/portfolio?tag=${encodeURIComponent(tag)}`;
+
+            return (
+              <a
+                href={tagHref}
+                class={`px-3 py-1 rounded-full text-xs font-medium transition-all ${isTagActive ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+              >
+                #{tag}
+
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+
+    <!-- Filtered Portfolio Cards -->
+    <div class="flex flex-col gap-6">
+      {filteredItems.length > 0 ? (
+        filteredItems.map((item: any, index: number) => (
+          <Card
+            _id={item._id}
+            _type={item._type}
+            title={item.title}
+            category={categoryMap[item.category] || item.category || 'Portfolio'}
+            slug={item.slug}
+            image={item.image}
+            description={item.description}
+            tags={item.tags}
+            date={item.publishedAt ? item.publishedAt.split('T')[0] : ''}
+            reverse={index % 2 !== 0}
+          />
+        ))
+      ) : (
+        <p class="text-neutral-400 italic text-center py-12">No portfolio items found matching your filter selection.</p>
+      )}
+    </div>
+  </main>
+</Layout>

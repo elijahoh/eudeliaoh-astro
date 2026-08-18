@@ -1,0 +1,149 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WavyBanner from '../../components/WavyBanner.astro';
+import Card from '../../components/Card.astro';
+import { sanityClient } from 'sanity:client';
+
+const selectedCategory = Astro.url.searchParams.get('category')?.toLowerCase() || 'all';
+const selectedTag = Astro.url.searchParams.get('tag')?.toLowerCase();
+
+const CATEGORIES = [
+  { label: 'All', value: 'all' },
+  { label: 'Crafts', value: 'crafts' },
+  { label: 'Illustrations', value: 'illustrations' },
+  { label: 'Digital Art', value: 'digital-art' },
+  { label: 'Coding', value: 'coding' },
+  { label: 'Journal', value: 'journal' },
+];
+
+const categoryMap: Record<string, string> = {
+  'crafts': 'Crafts',
+  'illustrations': 'Illustrations',
+  'digital-art': 'Digital Art',
+  'coding': 'Coding',
+  'journal': 'Journal',
+};
+
+// Fetch all blog posts
+const rawPosts = await sanityClient.fetch(
+  `*[_type == "post"] | order(publishedAt desc) {
+    _id,
+    _type,
+    title,
+    category,
+    "slug": slug.current,
+    "image": mainImage.asset->url,
+    description,
+    tags,
+    publishedAt,
+    readTime
+  }`,
+  {},
+  { stega: false }
+);
+
+// 1. Filter posts by Category first
+const categoryFilteredPosts = selectedCategory !== 'all'
+  ? rawPosts.filter((post: any) => post.category?.toLowerCase() === selectedCategory)
+  : rawPosts;
+
+// 2. Extract unique tags within current category scope
+const categoryTags = [...new Set(categoryFilteredPosts.flatMap((post: any) => post.tags || []))];
+
+// 3. Filter posts by Tag if selected
+const filteredPosts = selectedTag
+  ? categoryFilteredPosts.filter((post: any) =>
+      post.tags?.some((t: string) => t.toLowerCase() === selectedTag)
+    )
+  : categoryFilteredPosts;
+
+// Subtitle generator logic
+let subtitleText = "Behind-the-scenes, project breakdowns, personal journal entries, and creative thoughts.";
+if (selectedCategory !== 'all' && selectedTag) {
+  subtitleText = `Articles under ${categoryMap[selectedCategory] || selectedCategory} tagged with #${selectedTag}`;
+} else if (selectedCategory !== 'all') {
+  subtitleText = `Articles under ${categoryMap[selectedCategory] || selectedCategory}`;
+} else if (selectedTag) {
+  subtitleText = `Articles tagged with #${selectedTag}`;
+}
+---
+
+<Layout title="Blog | Eudelia's Studio">
+  <WavyBanner
+    title="Blog & Articles"
+    subtitle={subtitleText}
+  />
+
+  <main class="max-w-4xl mx-auto px-4 py-12 space-y-8">
+
+    <!-- Category Filter Tabs -->
+    <div class="space-y-4 pb-6 border-b border-neutral-800">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider opacity-60 mr-2">Category:</span>
+        {CATEGORIES.map((cat) => {
+          const isActive = selectedCategory === cat.value;
+          const href = cat.value === 'all' ? '/blog' : `/blog?category=${cat.value}`;
+          return (
+            <a
+              href={href}
+              class={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${isActive ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+            >
+              {cat.label}
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Secondary Tag Filters (Scoped to Current Category) -->
+      {categoryTags.length > 0 && (
+        <div class="flex flex-wrap items-center gap-2 pt-2">
+          <span class="text-xs font-bold uppercase tracking-wider opacity-60 mr-2">Tags:</span>
+          <a
+            href={selectedCategory !== 'all' ? `/blog?category=${selectedCategory}` : '/blog'}
+            class={`px-3 py-1 rounded-full text-xs font-medium transition-all ${!selectedTag ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+          >
+            All Tags
+          </a>
+          {categoryTags.map((tag: string) => {
+            const isTagActive = selectedTag === tag.toLowerCase();
+            const tagHref = selectedCategory !== 'all'
+              ? `/blog?category=${selectedCategory}&tag=${encodeURIComponent(tag)}`
+              : `/blog?tag=${encodeURIComponent(tag)}`;
+
+            return (
+              <a
+                href={tagHref}
+                class={`px-3 py-1 rounded-full text-xs font-medium transition-all ${isTagActive ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
+              >
+                #{tag}
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+
+    <!-- Filtered Blog Cards -->
+    <div class="flex flex-col gap-6">
+      {filteredPosts.length > 0 ? (
+        filteredPosts.map((post: any, index: number) => (
+          <Card
+            _id={post._id}
+            _type={post._type}
+            title={post.title}
+            category={categoryMap[post.category] || post.category || 'Blog'}
+            slug={post.slug}
+            image={post.image}
+            description={post.description}
+            tags={post.tags}
+            date={post.publishedAt ? post.publishedAt.split('T')[0] : ''}
+            readTime={post.readTime}
+            reverse={index % 2 !== 0}
+          />
+        ))
+      ) : (
+        <p class="text-neutral-400 italic text-center py-12">No blog posts found matching your filter selection.</p>
+      )}
+    </div>
+  </main>
+</Layout>

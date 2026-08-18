@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WavyBanner from '../components/WavyBanner.astro';
+import Card from '../components/Card.astro';
+import { getFeaturedContent, getRecentContent } from '../lib/sanity';
+
+const categoryMap: Record<string, string> = {
+  'crafts': 'Crafts',
+  'illustrations': 'Illustrations',
+  'digital-art': 'Digital Art',
+  'coding': 'Coding',
+  'journal': 'Journal',
+};
+
+const rawPinnedItems = await getFeaturedContent();
+const rawRecentItems = await getRecentContent(8);
+
+// Format category names for friendly display
+const pinnedItems = rawPinnedItems.map((item) => ({
+  ...item,
+  category: categoryMap[item.category] || item.category || (item._type === 'portfolio' ? 'Portfolio' : 'Blog'),
+}));
+
+// Exclude items already shown in the Pinned section
+const pinnedIds = new Set(pinnedItems.map((item) => item._id));
+const recentItems = rawRecentItems
+  .filter((item) => !pinnedIds.has(item._id))
+  .slice(0, 4)
+  .map((item) => ({
+    ...item,
+    category: categoryMap[item.category] || item.category || (item._type === 'portfolio' ? 'Portfolio' : 'Blog'),
+  }));
+---
+
+<Layout title="Home | Eudelia's Studio">
+  <WavyBanner 
+    title="Welcome to Eudelia's Studio" 
+    subtitle="Explore my crafts, illustrations, digital art, coding projects, and creative blog posts." 
+  />
+
+  <main class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+    {/* Pinned / Featured Section */}
+    {pinnedItems.length > 0 && (
+      <section>
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold tracking-tight">Pinned Highlights</h2>
+          <p class="text-sm opacity-70">Hand-picked featured artworks and milestone posts</p>
+        </div>
+        <div class="flex flex-col gap-6">
+          {pinnedItems.map((item, index) => (
+            <Card {...item} reverse={index % 2 !== 0} />
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* Recent Activity Section */}
+    {recentItems.length > 0 && (
+      <section>
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold tracking-tight">Recent Updates</h2>
+          <p class="text-sm opacity-70">Latest published artworks and blog entries</p>
+        </div>
+
+        <div class="flex flex-col gap-6 mb-10">
+          {recentItems.map((item, index) => (
+            <Card {...item} reverse={index % 2 === 0} />
+          ))}
+        </div>
+
+        <!-- Archive Navigation Links (Uses Theme-Aware Styling) -->
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/portfolio" class="px-5 py-2.5 rounded-full btn-theme-action text-sm font-semibold transition-all shadow-sm">
+            View All Portfolio →
+          </a>
+          <a href="/blog" class="px-5 py-2.5 rounded-full btn-theme-action text-sm font-semibold transition-all shadow-sm">
+            Read All Blog Posts →
+          </a>
+        </div>
+      </section>
+    )}
+  </main>
+</Layout>
