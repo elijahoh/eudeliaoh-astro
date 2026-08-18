@@ -1,6 +1,16 @@
 {
-  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
   "include": [
-    "./worker-configuration.d.ts"
+    "src/**/*"
   ]
 }
