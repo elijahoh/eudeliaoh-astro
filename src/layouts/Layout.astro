@@ -24,6 +24,8 @@ const {
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    
+    <!-- Custom Lowercase 'e' Sakura Pink SVG Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Theme Flash Prevention Script (Defaults to Sakura) -->
@@ -48,13 +50,13 @@ const {
     <!-- Navbar driven entirely by Global CSS Variables -->
     <header class="navbar-header sticky top-0 z-50 backdrop-blur-md transition-colors border-b">
       <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        
+
         <!-- Navbar Brand (Supports Text-Only or Image + Text) -->
         <a href="/" class="nav-brand flex items-center gap-2.5 font-bold text-xl tracking-wide transition-opacity hover:opacity-80">
           {logoImage && (
-            <img 
-              src={logoImage} 
-              alt={`${logoText} Logo`} 
+            <img
+              src={logoImage}
+              alt={`${logoText} Logo`}
               class="w-8 h-8 rounded-full object-cover border border-pink-400/50 shadow-sm"
             />
           )}
@@ -91,7 +93,7 @@ const {
           </button>
         </div>
 
-        <!-- Mobile Controls (3-State Theme Toggle & 3-Lines Hamburger Button) -->
+        <!-- Mobile Controls (3-State Theme Toggle & Hamburger Button) -->
         <div class="flex items-center space-x-2 md:hidden">
           <!-- 3-State Theme Cycle Button (Mobile) -->
           <button
@@ -113,8 +115,7 @@ const {
             </svg>
           </button>
 
-
-          <!-- 3-Lines Hamburger Menu Toggle Button -->
+          <!-- Hamburger Menu Toggle Button -->
           <button
             id="mobile-menu-btn"
             aria-label="Toggle Navigation Menu"
@@ -137,9 +138,8 @@ const {
       </nav>
 
       <!-- Mobile Dropdown Navigation Menu (Hidden by Default) -->
-      <div 
-        id="mobile-menu" 
-
+      <div
+        id="mobile-menu"
         class="hidden md:hidden border-t px-4 py-4 space-y-2 font-semibold text-sm transition-colors border-[var(--color-nav-border)]"
       >
         <a href="/" class="nav-link block px-3 py-2 rounded-lg transition-colors">Home</a>
@@ -154,7 +154,7 @@ const {
       <slot />
     </main>
 
-    <!-- Floating Back to Top Button (Theme-aware styling) -->
+    <!-- Floating Back to Top Button -->
     <button
       id="back-to-top"
       aria-label="Scroll back to top of page"
@@ -184,6 +184,7 @@ const {
       .nav-toggle {
         border-color: var(--color-nav-toggle-border);
         color: var(--color-nav-text);
+
       }
       .nav-toggle:hover {
         background-color: var(--color-nav-toggle-hover);
@@ -206,7 +207,7 @@ const {
         btn.addEventListener('click', () => {
           const order = getThemeOrder();
           const current = document.documentElement.getAttribute('data-theme') || 'sakura';
-          
+
           const currentIndex = order.indexOf(current);
           const nextIndex = (currentIndex + 1) % order.length;
           const nextTheme = order[nextIndex];
@@ -228,7 +229,6 @@ const {
         hamburgerIcon?.classList.toggle('hidden');
         closeIcon?.classList.toggle('hidden');
       });
-
 
       // Floating Back to Top Button Logic
       const backToTopBtn = document.getElementById('back-to-top');
