@@ -47,10 +47,10 @@
   --card-image-tilt: rotate(2.5deg);
 
   /* ------------------------------------------------------------------------
-   * METADATA VISIBILITY TOGGLES
+   * METADATA VISIBILITY TOGGLES (inline-flex | none)
    * ------------------------------------------------------------------------ */
   --display-card-date: inline-flex;
-  --display-card-readtime: inline-flex;
+  --display-card-readtime: none;
 
   /* ------------------------------------------------------------------------
    * MULTI-LAYERED WAVING BANNER CONTROLS
