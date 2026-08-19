@@ -17,9 +17,8 @@ const post = await sanityClient.fetch(
     description,
     "image": mainImage.asset->url,
     "additionalImages": additionalImages[].asset->url,
-    tags,
+    "tags": tags[]->title,
     readTime,
-
     publishedAt,
     body,
     postBody,
@@ -61,10 +60,9 @@ const portableTextComponents = {
       <Carousel images={allImages} title={post.title} />
     )}
 
-    {/* Excerpt / Summary with Global Accent Styling */}
+    {/* Excerpt / Summary */}
     {post.description && (
       <p class="text-xl font-medium opacity-90 leading-relaxed mb-8 excerpt-accent pl-4 italic">
-
         {post.description}
       </p>
     )}
@@ -82,9 +80,8 @@ const portableTextComponents = {
 
       {post.tags && post.tags.map((tag: string) => (
         <a
-          href={`/tag?name=${encodeURIComponent(tag)}`}
+          href={`/blog?tag=${encodeURIComponent(tag)}`}
           class="px-3 py-1 tag-pill-inactive rounded-full text-xs font-semibold hover:opacity-80 transition-opacity"
-
         >
           #{tag}
         </a>
@@ -95,6 +92,7 @@ const portableTextComponents = {
     {bodyContent && (
       <div class="prose dark:prose-invert max-w-none text-lg leading-relaxed space-y-6">
         <PortableText value={bodyContent} components={portableTextComponents} />
+
       </div>
     )}
   </article>

@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 
+
 export const post = defineType({
   name: 'post',
   title: 'Blog Post',
@@ -15,6 +16,7 @@ export const post = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
+
       options: {
         source: 'title',
         maxLength: 96,
@@ -40,13 +42,10 @@ export const post = defineType({
     defineField({
       name: 'tags',
       title: 'Tags',
-
       type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        layout: 'tags',
-      },
+      of: [{ type: 'reference', to: [{ type: 'tag' }] }],
     }),
+
     defineField({
       name: 'pinned',
       title: 'Pinned to Home Highlights',
@@ -63,7 +62,6 @@ export const post = defineType({
       title: 'Published at',
       type: 'datetime',
       validation: (Rule) => Rule.required(),
-
     }),
     defineField({
       name: 'mainImage',
@@ -99,6 +97,7 @@ export const post = defineType({
       type: 'array',
       of: [{ type: 'block' }, { type: 'image', options: { hotspot: true } }],
     }),
+
   ],
   preview: {
     select: {

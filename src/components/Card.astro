@@ -7,7 +7,7 @@ interface Props {
   image: string;
   slug?: string;
   description?: string;
-  tags?: string[];
+  tags?: (string | { title?: string })[];
   pinned?: boolean;
   href?: string;
   reverse?: boolean;
@@ -34,6 +34,9 @@ const {
 // Route calculation: uses _type ('portfolio' -> /portfolio/slug, 'post' -> /blog/slug) to prevent 404 errors when category is a discipline name
 const routePrefix = _type === 'post' ? 'blog' : (_type === 'portfolio' ? 'portfolio' : category.toLowerCase());
 const computedHref = href !== "#" ? href : (slug ? `/${routePrefix}/${slug}` : "#");
+
+// Safely normalize tags whether passed as strings or objects
+const normalizedTags = tags.map((t) => (typeof t === 'string' ? t : t?.title || '')).filter(Boolean);
 ---
 
 <div class="group relative block overflow-hidden rounded-2xl custom-card-shadow transition-all duration-300 transform hover:-translate-y-1 bg-[var(--color-card-bg)]">
@@ -103,9 +106,9 @@ const computedHref = href !== "#" ? href : (slug ? `/${routePrefix}/${slug}` : "
       <div class="flex items-center justify-between mt-4">
         <!-- Global Tag Search Links (z-20 overrides full card link) -->
         <div class="flex flex-wrap gap-1.5 relative z-20">
-          {tags.map((tag) => (
+          {normalizedTags.map((tag) => (
             <a
-              href={`/tag?name=${encodeURIComponent(tag)}`}
+              href={`/tag?tag=${encodeURIComponent(tag)}`}
               class="card-tag text-xs px-2.5 py-1 rounded-md font-medium border transition-colors hover:bg-amber-400 hover:text-neutral-950"
             >
               #{tag}
@@ -120,7 +123,7 @@ const computedHref = href !== "#" ? href : (slug ? `/${routePrefix}/${slug}` : "
     </div>
   </div>
 
-  {/* Primary Card Overlay Link (Covers everything at z-10 except z-20 tags) */}
+  {/* Primary Card Overlay Link */}
   <a href={computedHref} class="absolute inset-0 z-10" aria-label={title}></a>
 </div>
 

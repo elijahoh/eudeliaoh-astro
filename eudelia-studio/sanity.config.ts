@@ -1,22 +1,30 @@
-import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './schemaTypes'
+import { defineConfig } from 'sanity';
+import { structureTool } from 'sanity/structure';
+import { visionTool } from '@sanity/vision';
+import { schemaTypes } from './schemaTypes';
 
 export default defineConfig({
   name: 'default',
-  title: 'eudelia-studio',
-
-
+  title: 'Eudelia Studio',
   projectId: '4ojaxary',
   dataset: 'production',
-
   plugins: [
     structureTool({
       structure: (S) =>
         S.list()
           .title('Content')
           .items([
+            // Dedicated Tags Folder
+            S.listItem()
+              .title('🏷️ Tags')
+              .child(
+                S.documentList()
+                  .title('Tags')
+                  .filter('_type == "tag"')
+              ),
+
+            S.divider(),
+
             // Dedicated Pinned Items folder
             S.listItem()
               .title('📌 Pinned Items')
@@ -39,6 +47,7 @@ export default defineConfig({
                           .filter('_type == "portfolio" && pinned == true')
                       ),
                   ])
+
               ),
 
             // Category Folders (Filtered views)
@@ -66,6 +75,7 @@ export default defineConfig({
                       .title('Digital Art')
                       .child(
                         S.documentList()
+
                           .title('Digital Art')
                           .filter('_type in ["portfolio", "post"] && category == "digital-art"')
                       ),
@@ -87,14 +97,16 @@ export default defineConfig({
               ),
 
             S.divider(),
-            // Standard document list for all items
-            ...S.documentTypeListItems(),
+
+            // Filters out duplicate Tag item from the bottom list
+            ...S.documentTypeListItems().filter(
+              (listItem) => !['tag'].includes(listItem.getId() || '')
+            ),
           ]),
     }),
     visionTool(),
   ],
-
   schema: {
     types: schemaTypes,
   },
-})
+});

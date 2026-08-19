@@ -22,7 +22,7 @@ const categoryMap: Record<string, string> = {
   'coding': 'Coding',
 };
 
-// Fetch all portfolio items
+// Fetch all portfolio items with dereferenced tag titles
 const rawItems = await sanityClient.fetch(
   `*[_type == "portfolio"] | order(publishedAt desc) {
     _id,
@@ -32,26 +32,43 @@ const rawItems = await sanityClient.fetch(
     "slug": slug.current,
     "image": mainImage.asset->url,
     description,
-    tags,
+    "tags": tags[]->title,
     publishedAt
-
   }`,
   {},
   { stega: false }
 );
 
-// 1. Filter by Category first (if not 'all')
+// 1. Filter by Category first
 const categoryFilteredItems = selectedCategory !== 'all'
   ? rawItems.filter((item: any) => item.category?.toLowerCase() === selectedCategory)
   : rawItems;
 
-// 2. Extract unique tags within the currently selected category context
-const categoryTags = [...new Set(categoryFilteredItems.flatMap((item: any) => item.tags || []))];
+// 2. Count tag frequencies within current category scope
+const tagCounts: Record<string, number> = {};
+categoryFilteredItems.forEach((item: any) => {
+  (item.tags || []).forEach((tag: string) => {
+    if (!tag) return;
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+
+// Sort tags by popularity count (descending), then alphabetically
+const sortedTags = Object.keys(tagCounts).sort((a, b) => {
+  const countDiff = tagCounts[b] - tagCounts[a];
+  if (countDiff !== 0) return countDiff;
+  return a.localeCompare(b);
+});
+
+// Split tags into Top 6 pills and remaining dropdown tags
+const TOP_LIMIT = 6;
+const topTags = sortedTags.slice(0, TOP_LIMIT);
+const remainingTags = sortedTags.slice(TOP_LIMIT);
+const isSelectedInDropdown = remainingTags.some(t => t.toLowerCase() === selectedTag);
 
 // 3. Filter by Tag if selected
 const filteredItems = selectedTag
   ? categoryFilteredItems.filter((item: any) =>
-
       item.tags?.some((t: string) => t.toLowerCase() === selectedTag)
     )
   : categoryFilteredItems;
@@ -69,6 +86,7 @@ if (selectedCategory !== 'all' && selectedTag) {
 
 <Layout title="Portfolio | Eudelia's Studio">
   <WavyBanner
+
     title="Portfolio Showcase"
     subtitle={subtitleText}
   />
@@ -93,8 +111,8 @@ if (selectedCategory !== 'all' && selectedTag) {
         })}
       </div>
 
-      <!-- Secondary Tag Filters (Scoped to Current Category) -->
-      {categoryTags.length > 0 && (
+      <!-- Secondary Tag Filters (Top 6 Pills + Dropdown) -->
+      {sortedTags.length > 0 && (
         <div class="flex flex-wrap items-center gap-2 pt-2">
           <span class="text-xs font-bold uppercase tracking-wider opacity-60 mr-2">Tags:</span>
           <a
@@ -103,9 +121,12 @@ if (selectedCategory !== 'all' && selectedTag) {
           >
             All Tags
           </a>
-          {categoryTags.map((tag: string) => {
+
+          {/* Top 6 Popular Tag Pills */}
+          {topTags.map((tag: string) => {
             const isTagActive = selectedTag === tag.toLowerCase();
             const tagHref = selectedCategory !== 'all'
+
               ? `/portfolio?category=${selectedCategory}&tag=${encodeURIComponent(tag)}`
               : `/portfolio?tag=${encodeURIComponent(tag)}`;
 
@@ -114,11 +135,33 @@ if (selectedCategory !== 'all' && selectedTag) {
                 href={tagHref}
                 class={`px-3 py-1 rounded-full text-xs font-medium transition-all ${isTagActive ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'}`}
               >
-                #{tag}
-
+                #{tag} <span class="opacity-60 text-[10px]">({tagCounts[tag]})</span>
               </a>
             );
           })}
+
+          {/* Dropdown for Remaining Tags */}
+          {remainingTags.length > 0 && (
+            <select
+              id="portfolio-tag-dropdown"
+              class={`px-3 py-1 rounded-full text-xs font-medium transition-all border outline-none cursor-pointer ${
+                isSelectedInDropdown ? 'tag-pill-active' : 'tag-pill-inactive hover:opacity-80'
+              }`}
+            >
+              <option value="" disabled selected={!isSelectedInDropdown}>
+                More tags ({remainingTags.length})...
+              </option>
+              {remainingTags.map((tag: string) => (
+                <option
+                  value={tag}
+                  selected={selectedTag === tag.toLowerCase()}
+                  class="bg-neutral-900 text-neutral-200"
+                >
+                  #{tag} ({tagCounts[tag]})
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       )}
     </div>
@@ -146,3 +189,16 @@ if (selectedCategory !== 'all' && selectedTag) {
     </div>
   </main>
 </Layout>
+
+<script>
+  const portfolioDropdown = document.getElementById('portfolio-tag-dropdown') as HTMLSelectElement | null;
+  if (portfolioDropdown) {
+    portfolioDropdown.addEventListener('change', (e) => {
+      const selected = (e.target as HTMLSelectElement).value;
+      if (!selected) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set('tag', selected);
+      window.location.href = url.toString();
+    });
+  }
+</script>

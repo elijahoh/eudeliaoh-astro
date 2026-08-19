@@ -17,7 +17,7 @@ const item = await sanityClient.fetch(
     description,
     "image": mainImage.asset->url,
     "additionalImages": additionalImages[].asset->url,
-    tags,
+    "tags": tags[]->title,
     publishedAt,
     body
   }`,
@@ -40,10 +40,10 @@ const allImages = [item.image, ...(item.additionalImages || [])].filter(Boolean)
 
 const portableTextComponents = {
   type: {
-
     image: SanityImage,
   },
 };
+
 ---
 
 <Layout title={`${item.title} | Portfolio`}>
@@ -55,7 +55,7 @@ const portableTextComponents = {
       <Carousel images={allImages} title={item.title} />
     )}
 
-    {/* Excerpt / Summary with Global Accent Styling */}
+    {/* Excerpt / Summary */}
     {item.description && (
       <p class="text-xl font-medium opacity-90 leading-relaxed mb-8 excerpt-accent pl-4 italic">
         {item.description}
@@ -64,6 +64,7 @@ const portableTextComponents = {
 
     {/* Category & Tag Metadata */}
     <div class="flex flex-wrap items-center gap-2 mb-8">
+
       {item.category && (
         <a
           href={`/portfolio?category=${item.category}`}
@@ -75,7 +76,7 @@ const portableTextComponents = {
 
       {item.tags && item.tags.map((tag: string) => (
         <a
-          href={`/tag?name=${encodeURIComponent(tag)}`}
+          href={`/portfolio?tag=${encodeURIComponent(tag)}`}
           class="px-3 py-1 tag-pill-inactive rounded-full text-xs font-semibold hover:opacity-80 transition-opacity"
         >
           #{tag}
@@ -89,5 +90,6 @@ const portableTextComponents = {
         <PortableText value={item.body} components={portableTextComponents} />
       </div>
     )}
+
   </article>
 </Layout>

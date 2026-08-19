@@ -4,8 +4,7 @@ import WavyBanner from '../components/WavyBanner.astro';
 import Card from '../components/Card.astro';
 import { sanityClient } from 'sanity:client';
 
-
-const selectedTag = Astro.url.searchParams.get('name') || '';
+const selectedTag = Astro.url.searchParams.get('name') || Astro.url.searchParams.get('tag') || '';
 
 const categoryMap: Record<string, string> = {
   'crafts': 'Crafts',
@@ -15,9 +14,9 @@ const categoryMap: Record<string, string> = {
   'journal': 'Journal',
 };
 
-// Query BOTH post and portfolio documents matching the tag
+// Query BOTH post and portfolio documents where dereferenced tag titles match
 const rawItems = await sanityClient.fetch(
-  `*[_type in ["portfolio", "post"] && $tag in tags] | order(publishedAt desc) {
+  `*[_type in ["portfolio", "post"] && $tag in tags[]->title] | order(publishedAt desc) {
     _id,
     _type,
     title,
@@ -25,7 +24,7 @@ const rawItems = await sanityClient.fetch(
     "slug": slug.current,
     "image": mainImage.asset->url,
     description,
-    tags,
+    "tags": tags[]->title,
     publishedAt,
     readTime
   }`,

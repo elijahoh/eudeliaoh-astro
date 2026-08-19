@@ -14,6 +14,17 @@ export default defineConfig({
         S.list()
           .title('Content')
           .items([
+            // Dedicated Tags Folder
+            S.listItem()
+              .title('🏷️ Tags')
+              .child(
+                S.documentList()
+                  .title('Tags')
+                  .filter('_type == "tag"')
+              ),
+
+            S.divider(),
+
             // Dedicated Pinned Items folder
             S.listItem()
               .title('📌 Pinned Items')
@@ -81,12 +92,14 @@ export default defineConfig({
                           .filter('_type == "post" && category == "journal"')
                       ),
                   ])
-
               ),
 
             S.divider(),
-            // Standard document list for all items
-            ...S.documentTypeListItems(),
+
+            // Filters out duplicate Tag item from the bottom list
+            ...S.documentTypeListItems().filter(
+              (listItem) => !['tag'].includes(listItem.getId() || '')
+            ),
           ]),
     }),
     media(),

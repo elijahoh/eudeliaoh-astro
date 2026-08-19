@@ -29,7 +29,7 @@ export async function getFeaturedContent(): Promise<CardItem[]> {
     "slug": slug.current,
     "image": mainImage.asset->url,
     description,
-    tags,
+    "tags": tags[]->title,
     pinned,
     publishedAt,
     readTime
@@ -56,7 +56,7 @@ export async function getRecentContent(limit = 4): Promise<CardItem[]> {
     "slug": slug.current,
     "image": mainImage.asset->url,
     description,
-    tags,
+    "tags": tags[]->title,
     pinned,
     publishedAt,
     readTime
