@@ -3,7 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import WavyBanner from '../components/WavyBanner.astro';
 import { getCertificates } from '../lib/sanity';
 
-const certificates = await getCertificates();
+const rawCertificates = await getCertificates();
+
+// Sort so 'Others' items render last while preserving issueDate descending order within groups
+const certificates = rawCertificates.sort((a, b) => {
+  const aIsOther = a.category === 'Others' ? 1 : 0;
+  const bIsOther = b.category === 'Others' ? 1 : 0;
+  return aIsOther - bIsOther;
+});
 
 function formatMonthYear(dateStr?: string): string {
   if (!dateStr) return '';
@@ -47,7 +54,6 @@ const skills = [
 
     <!-- Hero Bio Section -->
     <section class="flex flex-col md:flex-row items-center gap-8 bg-[var(--color-card-bg)] border border-neutral-200 dark:border-neutral-800 p-8 rounded-2xl shadow-md">
-      <!-- Profile Picture Container with Theme-Aware Accent Border -->
       <div class="w-40 h-40 md:w-48 md:h-48 shrink-0 rounded-full overflow-hidden border-4 border-[var(--color-excerpt-border)] shadow-lg">
         <img
           src="https://picsum.photos/400/400?random=10"
@@ -119,7 +125,7 @@ const skills = [
                 </div>
               </div>
 
-              <!-- Action Row with Theme-Aware 2-Arrows Expand SVG Icon -->
+              <!-- Action Row with 2-Arrows Expand SVG Icon -->
               <div class="flex items-center justify-between pt-2 border-t border-neutral-100 dark:border-neutral-800 text-xs font-semibold text-[var(--color-card-category)]">
                 <span>View Details & Certificate</span>
                 <svg class="w-4 h-4 stroke-current group-hover:scale-110 transition-transform shrink-0" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -146,6 +152,7 @@ const skills = [
                       </span>
                     )}
                     <h3 class="text-xl font-bold">{cert.title}</h3>
+
                     <p class="text-xs opacity-75">{cert.issuer} • {formatMonthYear(cert.issueDate)}</p>
                   </div>
                   <form method="dialog">
@@ -200,6 +207,7 @@ const skills = [
         </div>
       </section>
     )}
+
 
   </main>
 </Layout>

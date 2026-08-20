@@ -1,6 +1,5 @@
 import { defineField, defineType } from 'sanity'
 
-
 export const certificate = defineType({
   name: 'certificate',
   title: 'Certificate & Recognition',
@@ -29,7 +28,6 @@ export const certificate = defineType({
     }),
     defineField({
       name: 'category',
-
       title: 'Category',
       type: 'string',
       options: {
@@ -37,6 +35,7 @@ export const certificate = defineType({
           { title: 'Art & Design', value: 'Art & Design' },
           { title: 'Coding & Tech', value: 'Coding & Tech' },
           { title: 'Workshops & Competitions', value: 'Workshops & Competitions' },
+          { title: 'Others', value: 'Others' },
         ],
       },
     }),

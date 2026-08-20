@@ -11,6 +11,7 @@ export const certificate = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
+
     defineField({
       name: 'issuer',
       title: 'Issuing Organization / Host',
@@ -34,7 +35,9 @@ export const certificate = defineType({
         list: [
           { title: 'Art & Design', value: 'Art & Design' },
           { title: 'Coding & Tech', value: 'Coding & Tech' },
+
           { title: 'Workshops & Competitions', value: 'Workshops & Competitions' },
+          { title: 'Others', value: 'Others' },
         ],
       },
     }),
