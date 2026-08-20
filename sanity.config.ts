@@ -12,6 +12,7 @@ export default defineConfig({
     structureTool({
       structure: (S) =>
         S.list()
+
           .title('Content')
           .items([
             // Dedicated Tags Folder
@@ -21,6 +22,16 @@ export default defineConfig({
                 S.documentList()
                   .title('Tags')
                   .filter('_type == "tag"')
+              ),
+
+            // Dedicated Certificates Folder
+
+            S.listItem()
+              .title('📜 Certificates & Recognitions')
+              .child(
+                S.documentList()
+                  .title('Certificates & Recognitions')
+                  .filter('_type == "certificate"')
               ),
 
             S.divider(),
@@ -89,6 +100,7 @@ export default defineConfig({
                       .child(
                         S.documentList()
                           .title('Journal')
+
                           .filter('_type == "post" && category == "journal"')
                       ),
                   ])
@@ -96,9 +108,9 @@ export default defineConfig({
 
             S.divider(),
 
-            // Filters out duplicate Tag item from the bottom list
+            // Filters out duplicate Tag and Certificate items from the bottom list
             ...S.documentTypeListItems().filter(
-              (listItem) => !['tag'].includes(listItem.getId() || '')
+              (listItem) => !['tag', 'certificate'].includes(listItem.getId() || '')
             ),
           ]),
     }),

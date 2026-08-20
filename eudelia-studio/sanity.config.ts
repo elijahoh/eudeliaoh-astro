@@ -1,6 +1,6 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
-import { visionTool } from '@sanity/vision';
+import { media } from 'sanity-plugin-media';
 import { schemaTypes } from './schemaTypes';
 
 export default defineConfig({
@@ -21,6 +21,15 @@ export default defineConfig({
                 S.documentList()
                   .title('Tags')
                   .filter('_type == "tag"')
+              ),
+
+            // Dedicated Certificates Folder
+            S.listItem()
+              .title('📜 Certificates & Recognitions')
+              .child(
+                S.documentList()
+                  .title('Certificates & Recognitions')
+                  .filter('_type == "certificate"')
               ),
 
             S.divider(),
@@ -47,7 +56,6 @@ export default defineConfig({
                           .filter('_type == "portfolio" && pinned == true')
                       ),
                   ])
-
               ),
 
             // Category Folders (Filtered views)
@@ -75,7 +83,6 @@ export default defineConfig({
                       .title('Digital Art')
                       .child(
                         S.documentList()
-
                           .title('Digital Art')
                           .filter('_type in ["portfolio", "post"] && category == "digital-art"')
                       ),
@@ -98,13 +105,13 @@ export default defineConfig({
 
             S.divider(),
 
-            // Filters out duplicate Tag item from the bottom list
+            // Filters out duplicate Tag and Certificate items from the bottom list
             ...S.documentTypeListItems().filter(
-              (listItem) => !['tag'].includes(listItem.getId() || '')
+              (listItem) => !['tag', 'certificate'].includes(listItem.getId() || '')
             ),
           ]),
     }),
-    visionTool(),
+    media(),
   ],
   schema: {
     types: schemaTypes,

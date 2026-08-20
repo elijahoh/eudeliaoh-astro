@@ -1,6 +1,7 @@
-import { portfolio } from '../../schemaTypes/portfolio'
-import { post } from '../../schemaTypes/post'
-import { siteSettings } from '../../schemaTypes/siteSettings'
-import { tag } from '../../schemaTypes/tag'
+import { certificate } from './certificate'
+import { portfolio } from './portfolio'
+import { post } from './post'
+import { siteSettings } from './siteSettings'
+import { tag } from './tag'
 
-export const schemaTypes = [portfolio, post, siteSettings, tag]
+export const schemaTypes = [portfolio, post, siteSettings, tag, certificate]

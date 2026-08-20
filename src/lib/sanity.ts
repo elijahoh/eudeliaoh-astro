@@ -1,6 +1,5 @@
 import { sanityClient } from 'sanity:client';
 
-
 export interface CardItem {
   _id: string;
   _type: string;
@@ -13,6 +12,18 @@ export interface CardItem {
   pinned?: boolean;
   date?: string;
   readTime?: string;
+}
+
+export interface Certificate {
+  _id: string;
+  title: string;
+  issuer: string;
+  issueDate: string;
+  category?: string;
+  image?: string;
+  credentialUrl?: string;
+  transcriptUrl?: string;
+  description?: string;
 }
 
 export function formatDate(rawDate?: string): string {
@@ -70,6 +81,27 @@ export async function getRecentContent(limit = 4): Promise<CardItem[]> {
     }));
   } catch (error) {
     console.warn("Failed to fetch recent content:", error);
+    return [];
+  }
+}
+
+export async function getCertificates(): Promise<Certificate[]> {
+  const query = `*[_type == "certificate"] | order(issueDate desc) {
+    _id,
+    title,
+    issuer,
+    issueDate,
+    category,
+    "image": image.asset->url,
+    credentialUrl,
+    "transcriptUrl": transcript.asset->url,
+    description
+  }`;
+
+  try {
+    return await sanityClient.fetch(query, {}, { stega: false });
+  } catch (error) {
+    console.warn("Failed to fetch certificates:", error);
     return [];
   }
 }

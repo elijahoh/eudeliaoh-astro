@@ -30,6 +30,7 @@
    * ------------------------------------------------------------------------ */
   --card-height: 250px;
 
+
   /* ------------------------------------------------------------------------
    * CARD TYPOGRAPHY & ELEMENT SIZES
    * ------------------------------------------------------------------------ */
@@ -64,6 +65,7 @@
   --wave-opacity-2: 0.5;  /* Middle opacity */
   --wave-opacity-3: 0.25; /* Back opacity */
 
+
   /* Default Theme Variables (Sakura Fallback - Card BG Matches Main BG) */
 
   --color-bg: #fbcfe8;
@@ -86,6 +88,7 @@
   --color-card-more-hover-bg: #db2777;
   --color-card-more-hover-text: #ffffff;
   --card-shadow: 0 10px 30px -5px rgba(219, 39, 119, 0.18), 0 4px 12px -2px rgba(219, 39, 119, 0.08);
+
 
   /* NEW: Theme-Aware Container Borders & Form Field Controls (Sakura Fallbacks) */
   --color-border: #f472b6;
@@ -132,7 +135,6 @@
   /* Active Filter Tag Pills */
   --color-tag-active-bg: #db2777;
   --color-tag-active-text: #ffffff;
-
 
   /* Excerpt Vertical Accent Border */
   --color-excerpt-border: #db2777;
@@ -229,10 +231,12 @@
   --color-nav-toggle-border: #475569;
   --color-nav-toggle-hover: #1e293b;
 
+
   /* Category Label */
   --color-card-category: #c084fc;
 
   /* Card Text & Hover Colors */
+
   --color-card-title: #f8fafc;
   --color-card-title-hover: #c084fc;
   --color-card-description: #cbd5e1;
@@ -248,11 +252,11 @@
   --color-card-tag-border: #334155;
 
   /* Active Filter Tag Pills */
-  --color-tag-active-bg: #fbbf24;
+  --color-tag-active-bg: #c084fc;
   --color-tag-active-text: #0f172a;
 
   /* Excerpt Vertical Accent Border */
-  --color-excerpt-border: #fbbf24;
+  --color-excerpt-border: #c084fc;
 
   /* Action Pill & Hover Colors */
   --color-card-more-bg: #3b0764;
@@ -269,7 +273,7 @@
 
   --color-input-border: #475569;
   --color-input-placeholder: #64748b;
-  --color-input-focus: #fbbf24;
+  --color-input-focus: #c084fc;
 }
 
 body {
@@ -291,7 +295,6 @@ body {
   display: var(--display-card-readtime, inline-flex);
 }
 
-
 /* ------------------------------------------------------------------------
    3-STATE TOGGLE BUTTON ICON VISIBILITY RULES
    Shows Sakura SVG (🌸), Sun (☀️), or Moon (🌙) based on current data-theme.
@@ -303,6 +306,7 @@ body {
 }
 
 [data-theme="sakura"] .theme-sakura,
+
 html:not([data-theme]) .theme-sakura {
   display: block;
 }
@@ -369,7 +373,6 @@ html:not([data-theme]) .theme-sakura {
 /* Theme-Aware Container Borders */
 .theme-card-border {
   border-color: var(--color-border);
-
 }
 
 /* Theme-Aware Form Inputs (<input>, <textarea>) */
@@ -387,4 +390,21 @@ html:not([data-theme]) .theme-sakura {
 .form-input-theme:focus {
   outline: none;
   border-color: var(--color-input-focus);
+}
+
+/* ------------------------------------------------------------------------
+   GLOBAL THEME ACCENT HELPERS
+   Synchronizes highlight text, borders, and buttons with Tag/Category accents.
+   ------------------------------------------------------------------------ */
+.text-theme-accent {
+  color: var(--color-card-category);
+}
+
+.border-theme-accent {
+  border-color: var(--color-excerpt-border);
+}
+
+.bg-theme-accent {
+  background-color: var(--color-tag-active-bg);
+  color: var(--color-tag-active-text);
 }
